@@ -155,7 +155,7 @@ class Unistroke:
         self.points = translate_to(self.points, ORIGIN)
 
 # code from given notebook
-def load_unistrokes_from_XML(path):
+def load_templates_from_XML(path):
     unistrokes = []
     for root, subdirs, files in os.walk(path):
         if len(files) > 0:
@@ -176,7 +176,7 @@ def load_unistrokes_from_XML(path):
 
 class DollarRecognizer:
     def __init__(self):
-        self.unistrokes = load_unistrokes_from_XML("dataset/taskOne") #path where templates are stored
+        self.unistrokes = load_templates_from_XML("dataset/taskOne") #path where templates are stored
 
     
     def recognize(self, points):

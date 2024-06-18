@@ -52,6 +52,7 @@ def on_key_press(symbol, modifiers):
 
 def start_recognition():
     global recognition_in_progress, points
+    print(points)
 
     for point in points:
         y = point.y
