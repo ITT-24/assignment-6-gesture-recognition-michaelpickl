@@ -176,7 +176,7 @@ def load_unistrokes_from_XML(path):
 
 class DollarRecognizer:
     def __init__(self):
-        self.unistrokes = load_unistrokes_from_XML("dataset") #path where templates are stored
+        self.unistrokes = load_unistrokes_from_XML("dataset/taskOne") #path where templates are stored
 
     
     def recognize(self, points):
