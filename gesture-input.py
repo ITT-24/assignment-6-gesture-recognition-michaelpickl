@@ -7,7 +7,7 @@ from pyglet import shapes
 from recognizer import DollarRecognizer, Point, resample_points, scale_to, translate_to, SQUARE_SIZE, ORIGIN
 
 #pyglet 
-window = pyglet.window.Window(1920, 1080)
+window = pyglet.window.Window(1440, 900)
 batch = pyglet.graphics.Batch()
 recognized_label = pyglet.text.Label('', x=10, y=10, anchor_x='left', anchor_y='bottom')
 
