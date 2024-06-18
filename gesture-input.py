@@ -26,7 +26,7 @@ recognition_in_progress = False
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     global recognition_in_progress
     if buttons & mouse.LEFT and not recognition_in_progress:
-        points.append(Point(float(x), float(y)))  # Convert to float as Point expects float
+        points.append(Point(float(x), float(y)))
         if len(points) > 1:
             #draw line between points | chatgpt
             line = shapes.Line(points[-2].x, points[-2].y, points[-1].x, points[-1].y,
@@ -52,6 +52,10 @@ def on_key_press(symbol, modifiers):
 
 def start_recognition():
     global recognition_in_progress, points
+
+    for point in points:
+        y = point.y
+        point.y = WINDOW_HEIGHT - y
 
     recognition_in_progress = True
     candidate_points = resample_points(points)
