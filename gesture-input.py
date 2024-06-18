@@ -1,36 +1,35 @@
-# gesture input program for first task
-#pyglet application where u can draw, reset and recognize
-
 import pyglet
 from pyglet.window import mouse, key
 from pyglet import shapes
 from recognizer import DollarRecognizer, Point, resample_points, scale_to, translate_to, SQUARE_SIZE, ORIGIN
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+import time
 
-#pyglet 
+# Pyglet configuration
 WINDOW_HEIGHT = 900
 WINDOW_WIDTH = 1440
 window = pyglet.window.Window(WINDOW_WIDTH, WINDOW_HEIGHT)
 batch = pyglet.graphics.Batch()
 recognized_label = pyglet.text.Label('', x=10, y=10, anchor_x='left', anchor_y='bottom')
 
-# lists
+# Lists
 points = []
 lines = []
+name = 'pigtail10'
 
-#recognizer
+# Recognizer
 dollarRecognizer = DollarRecognizer()
 recognition_in_progress = False
 
-#drawin event in pyglet
+# Drawing event in Pyglet
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     global recognition_in_progress
     if buttons & mouse.LEFT and not recognition_in_progress:
         points.append(Point(float(x), float(y)))
         if len(points) > 1:
-            #draw line between points | chatgpt
-            line = shapes.Line(points[-2].x, points[-2].y, points[-1].x, points[-1].y,
-                               width=2, color=(255, 255, 255), batch=batch)
+            line = shapes.Line(points[-2].x, points[-2].y, points[-1].x, points[-1].y, width=2, color=(255, 255, 255), batch=batch)
             lines.append(line)
 
 @window.event
@@ -39,7 +38,7 @@ def on_draw():
     batch.draw()
     recognized_label.draw()
 
-# key press events, enter and r
+# Key press events
 @window.event
 def on_key_press(symbol, modifiers):
     global points, recognition_in_progress
@@ -49,6 +48,9 @@ def on_key_press(symbol, modifiers):
     
     if symbol == key.R:
         reset_everything()
+    
+    if symbol == key.S:
+        save_points_to_xml(f'{name}.xml')
 
 def start_recognition():
     global recognition_in_progress, points
@@ -76,6 +78,20 @@ def reset_everything():
     recognition_in_progress = False
     recognized_label.text = ''
 
-#run pyglet
-pyglet.app.run()
+#function to save drawn shape as xml with help from chatgpt
+def save_points_to_xml(filename):
+    global name
+    root = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="Gestures", AppVer="3.5.0.0", Date="Monday, March 05, 2007", TimeOfDay="5:05:00 PM")
 
+    for i, point in enumerate(points):
+        ET.SubElement(root, "Point", X=str(int(point.x)), Y=str(int(point.y)), T=str(i))
+    
+    rough_string = ET.tostring(root, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    pretty_xml_as_string = reparsed.toprettyxml(indent="  ")
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(pretty_xml_as_string)
+
+# Run Pyglet
+pyglet.app.run()
