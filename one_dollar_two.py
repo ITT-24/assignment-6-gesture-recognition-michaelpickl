@@ -1,16 +1,20 @@
 from recognizer import DollarRecognizer, resample_points, scale_to, translate_to, SQUARE_SIZE, ORIGIN, Point
+import os
+import xml.etree.ElementTree as ET
+import time
+import numpy as np
 
 #list
 points = []
+times = []
 correct_predictions = 0
 total_attempts = 0
 accuracy = 0
+mean_time = 0
 
 dollarRecognizer = DollarRecognizer()
 
-
-import os
-import xml.etree.ElementTree as ET
+folder_path = 'dataset/michael_dataset' 
 
 def extract_gesture_data(file_path):
     tree = ET.parse(file_path)
@@ -37,24 +41,27 @@ def read_gestures_from_folder(folder_path):
     
     return gesture_data
 
-# Example usage
-folder_path = 'dataset/test' 
 points = read_gestures_from_folder(folder_path)
-
-
-
 
 for name, point in points:
     resampled_points = resample_points(point)
     resampled_points = scale_to(resampled_points, SQUARE_SIZE)
     resampled_points = translate_to(resampled_points, ORIGIN)
+    start_time = time.time()
     recognized_result = dollarRecognizer.recognize(resampled_points)
+    end_time = time.time()
+    recognize_time = end_time - start_time
+    times.append(recognize_time)
 
-    expected_result = name[:-2] # Replace with your expected gesture name
+    expected_result = name[:-2]
     if recognized_result.name == expected_result:
         correct_predictions += 1
     total_attempts += 1
 
 accuracy = correct_predictions / total_attempts
+
+mean_time = np.mean(times)
+
 print(accuracy)
+print(mean_time)
 
