@@ -2,6 +2,7 @@
 
 #https://depts.washington.edu/acelab/proj/dollar/index.html
 #used example codes from this website
+# chat gpt helped at some math issues i got
 
 #imports
 import numpy as np
@@ -114,7 +115,7 @@ def distance(p1, p2):
 
 def path_distance(pts1, pts2):
     if len(pts1) != len(pts2):
-        raise ValueError("Both point lists must have the same length.")
+        raise ValueError("List arent the same length")
     total_distance = 0.0
     for i in range(len(pts1)):
         total_distance += distance(pts1[i], pts2[i])
@@ -175,7 +176,7 @@ def load_unistrokes_from_XML(path):
 
 class DollarRecognizer:
     def __init__(self):
-        self.unistrokes = load_unistrokes_from_XML("/Users/lgx/2.Semester/ITT/UE6/templates") #path where templates are stored
+        self.unistrokes = load_unistrokes_from_XML("/dataset") #path where templates are stored
 
     
     def recognize(self, points):
