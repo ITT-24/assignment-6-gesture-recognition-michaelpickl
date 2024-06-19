@@ -9,12 +9,12 @@ points = []
 times = []
 correct_predictions = 0
 total_attempts = 0
-accuracy = 0
-mean_time = 0
+accuracy_dollar = 0
+mean_time_dollar = 0
 
 dollarRecognizer = DollarRecognizer()
 
-folder_path = 'dataset/test_set' 
+folder_path = 'dataset/michael_dataset' 
 
 def extract_gesture_data(file_path):
     tree = ET.parse(file_path)
@@ -59,18 +59,15 @@ end_time = time.time()
 recognize_time = end_time - start_time
 times.append(recognize_time)
 
-accuracy = correct_predictions / total_attempts
+accuracy_dollar = correct_predictions / total_attempts
 
-mean_time = np.mean(times)
+mean_time_dollar = np.mean(times)
 
 def return_time():
-    global mean_time
-    return mean_time
+    return mean_time_dollar
 
 def return_accuracy():
-    global accuracy
-    return accuracy
+    return accuracy_dollar
 
-print(accuracy)
-print(mean_time)
-
+print(mean_time_dollar)
+print(accuracy_dollar)
