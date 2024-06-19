@@ -18,6 +18,7 @@ recognized_label = pyglet.text.Label('', x=10, y=10, anchor_x='left', anchor_y='
 points = []
 lines = []
 name = 'pigtail10'
+duration = 0
 
 # Recognizer
 dollarRecognizer = DollarRecognizer()
@@ -26,12 +27,15 @@ recognition_in_progress = False
 # Drawing event in Pyglet
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-    global recognition_in_progress
+    global recognition_in_progress, duration
     if buttons & mouse.LEFT and not recognition_in_progress:
+        start_time = time.time()
         points.append(Point(float(x), float(y)))
         if len(points) > 1:
             line = shapes.Line(points[-2].x, points[-2].y, points[-1].x, points[-1].y, width=2, color=(255, 255, 255), batch=batch)
             lines.append(line)
+        end_time = time.time()
+        duration = int((end_time - start_time) * 1000)
 
 @window.event
 def on_draw():
@@ -80,20 +84,23 @@ def reset_everything():
     recognized_label.text = ''
 
 #function to save drawn shape as xml with help from chatgpt
-
 def save_points_to_xml(filename):
-    global name
-    root = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="Gestures", AppVer="3.5.0.0", Date="Monday, March 05, 2007", TimeOfDay="5:05:00 PM")
-
-    for i, point in enumerate(points):
-        ET.SubElement(root, "Point", X=str(int(point.x)), Y=str(int(point.y)), T=str(i))
+    global name, points
     
+    # Create the root element with attributes
+    root = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="michael_app", AppVer="1.0", Date="Wednesday, June 19, 2024", TimeOfDay="06:28:40 PM")
+    
+    # Add point elements as children
+    for i, point in enumerate(points):
+        ET.SubElement(root, "Point", X=str(int(point.x)), Y=str(int(point.y)), T=str(duration))
+    
+    # Convert the XML tree to a string without pretty printing
     rough_string = ET.tostring(root, 'utf-8')
-    reparsed = minidom.parseString(rough_string)
-    pretty_xml_as_string = reparsed.toprettyxml(indent="  ")
+    
+    # Write the raw XML string to the file without adding line breaks
+    with open(filename, 'wb') as f:
+        f.write(rough_string)
 
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write(pretty_xml_as_string)
-        
+
 # Run Pyglet
 pyglet.app.run()
