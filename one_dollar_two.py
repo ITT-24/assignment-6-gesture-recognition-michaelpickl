@@ -14,7 +14,7 @@ mean_time = 0
 
 dollarRecognizer = DollarRecognizer()
 
-folder_path = 'dataset/my-dataset' 
+folder_path = 'dataset/test_set' 
 
 def extract_gesture_data(file_path):
     tree = ET.parse(file_path)
@@ -43,24 +43,33 @@ def read_gestures_from_folder(folder_path):
 
 points = read_gestures_from_folder(folder_path)
 
+start_time = time.time()
 for name, point in points:
     resampled_points = resample_points(point)
     resampled_points = scale_to(resampled_points, SQUARE_SIZE)
     resampled_points = translate_to(resampled_points, ORIGIN)
-    start_time = time.time()
     recognized_result = dollarRecognizer.recognize(resampled_points)
-    end_time = time.time()
-    recognize_time = end_time - start_time
-    times.append(recognize_time)
 
     expected_result = name[:-2]
     if recognized_result.name == expected_result:
         correct_predictions += 1
     total_attempts += 1
 
+end_time = time.time()
+recognize_time = end_time - start_time
+times.append(recognize_time)
+
 accuracy = correct_predictions / total_attempts
 
 mean_time = np.mean(times)
+
+def return_time():
+    global mean_time
+    return mean_time
+
+def return_accuracy():
+    global accuracy
+    return accuracy
 
 print(accuracy)
 print(mean_time)
