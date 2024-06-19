@@ -17,8 +17,9 @@ recognized_label = pyglet.text.Label('', x=10, y=10, anchor_x='left', anchor_y='
 # Lists
 points = []
 lines = []
-name = 'pigtail10'
+name = 'pigtail'
 duration = 0
+file_counter = 1
 
 # Recognizer
 dollarRecognizer = DollarRecognizer()
@@ -32,8 +33,7 @@ def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         start_time = time.time()
         points.append(Point(float(x), float(y)))
         if len(points) > 1:
-            line = shapes.Line(points[-2].x, points[-2].y, points[-1].x, points[-1].y, width=2, color=(255, 255, 255), batch=batch)
-            lines.append(line)
+            points.append(shapes.Circle(x, y, 3, color=(255, 255, 255), batch=batch))
         end_time = time.time()
         duration = int((end_time - start_time) * 1000)
 
@@ -55,7 +55,7 @@ def on_key_press(symbol, modifiers):
         reset_everything()
     
     if symbol == key.S:
-        save_points_to_xml('dataset/new_dataset')
+        save_points_to_xml(f'dataset/test/{name}')
 
 def start_recognition():
     global recognition_in_progress, points
@@ -84,11 +84,15 @@ def reset_everything():
     recognized_label.text = ''
 
 #function to save drawn shape as xml with help from chatgpt
-def save_points_to_xml(filename):
-    global name, points
+def save_points_to_xml(filename_prefix):
+    global file_counter, points, duration
+    
+    # Format the filename with leading zeros
+    filename = f"{filename_prefix}_{file_counter:02}.xml"
+    file_counter += 1
     
     # Create the root element with attributes
-    root = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="michael_app", AppVer="1.0", Date="Wednesday, June 19, 2024", TimeOfDay="06:28:40 PM")
+    root = ET.Element("Gesture", Name=filename, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds=str(duration), AppName="michael_app", AppVer="1.0", Date="Wednesday, June 19, 2024", TimeOfDay="09:07 PM")
     
     # Add point elements as children
     for i, point in enumerate(points):
@@ -100,6 +104,7 @@ def save_points_to_xml(filename):
     # Write the raw XML string to the file without adding line breaks
     with open(filename, 'wb') as f:
         f.write(rough_string)
+
 
 
 # Run Pyglet
