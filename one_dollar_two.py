@@ -14,7 +14,7 @@ mean_time = 0
 
 dollarRecognizer = DollarRecognizer()
 
-folder_path = 'dataset/michael_dataset' 
+folder_path = 'dataset/my-dataset' 
 
 def extract_gesture_data(file_path):
     tree = ET.parse(file_path)
