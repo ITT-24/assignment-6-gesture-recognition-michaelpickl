@@ -80,7 +80,7 @@ def reset_everything():
     recognized_label.text = ''
 
 #function to save drawn shape as xml with help from chatgpt
-'''
+
 def save_points_to_xml(filename):
     global name
     root = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="Gestures", AppVer="3.5.0.0", Date="Monday, March 05, 2007", TimeOfDay="5:05:00 PM")
@@ -94,22 +94,6 @@ def save_points_to_xml(filename):
 
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(pretty_xml_as_string)
-'''
-
-def save_points_to_xml(filename):
-    global name
-    gesture = ET.Element("Gesture", Name=name, Subject="1", Speed="fast", Number="1", NumPts=str(len(points)), Millseconds="547", AppName="Gestures", AppVer="3.5.0.0", Date="Monday, March 05, 2007", TimeOfDay="5:05:00 PM")
-
-    for point in points:
-        point_elem = ET.SubElement(gesture, "Point", X=str(point.x), Y=str(point.y), T=str(point.t))
-    tree = ET.ElementTree(gesture)
-    if not os.path.exists(filename):
-        os.makedirs(filename)
-    xml_file_path = os.path.join(filename, f"{name}.xml")
-    with open(xml_file_path, 'wb') as xml_file:
-        tree.write(xml_file, encoding='utf-8', xml_declaration=True)
-    print(f"XML saved to {xml_file_path}")
-
-
+        
 # Run Pyglet
 pyglet.app.run()
